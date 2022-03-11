@@ -81,16 +81,12 @@ export default class ConsoleRunner {
         });
     }
 
-    run() {
+    async run() {
         const that = this;
-
-        that.promptForPostcode()
-        .then(data => {
-            const postcode = data.replace(/\s/g, '') 
-            return that.getLocationForPostCode(postcode)
-        })
-        .then(location => that.getNearestStopPoints(location.latitude, location.longitude, 5))
-        .then(stopPoints => that.displayStopPoints(stopPoints))
-        .catch(error => console.log(error));
+        const data = await that.promptForPostcode().catch(error => console.log(error));
+        const postcode = data.replace(/\s/g, '');
+        const location =  await that.getLocationForPostCode(postcode).catch(error => console.log(error));
+        const stopPoints = await that.getNearestStopPoints(location.latitude, location.longitude, 5).catch(error => console.log(error));
+        that.displayStopPoints(stopPoints);
     }
 }
